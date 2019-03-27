@@ -7,8 +7,8 @@
 
    Crossword Puzzle Script
    
-    Author: Chad Williams
-    Date:   3.15.19
+   Author: Gabriel Fuentes
+   Date: 3.15.19  
    
    Global Variables
    ================
@@ -49,7 +49,7 @@
 
 */
 
-// step 4 A-F, declares variables.
+// initiatlizes variables
 var allLetters;
 var currentLetter;
 var wordLetters;
@@ -57,109 +57,114 @@ var acrossClue;
 var downClue;
 var typeDirection = "right";
 
+// onload of document runs init function
 window.onload = init;
-// step 6
+
 function init() {
+      // gets array with items from #crossword span
       allLetters = document.querySelectorAll('table#crossword span');
+
+      //    first item in allLetters array
       currentLetter = allLetters[0];
-
+      //    gets attribute A
       var acrossID = currentLetter.getAttribute('data-clue-a');
+      //    gets attribute d
       var downID = currentLetter.getAttribute('data-clue-d');
-
       acrossClue = document.getElementById(acrossID);
       downClue = document.getElementById(downID);
+      //    break point/debugging tool for console logging acrossClue value
       console.log(acrossClue);
-      // step 8a
+      //    runs formatpuzzle inserting currentLetter var
       formatPuzzle(currentLetter);
-      // step 8b
+      //    turns cursor into pointer for each item in array, on mouse down it formats the puzzle
       for (var i = 0; i < allLetters.length; i++) {
             allLetters[i].style.cursor = "pointer";
-            allLetters[i].onmousedown = function (e) {
+            allLetters[i].addEventListener('onmousedown', function (e) {
                   formatPuzzle(e.target);
-            };
+            });
       }
+      //    selects letter on keypress
+      document.addEventListener('keydown', selectLetter);
 
-      // step 10
-      document.addEventListener('keyDown', selectLetter);
-
-      // step 12a
       var typeImage = document.getElementById('directionImg');
-      // step 12b
       typeImage.style.cursor = "pointer";
-      // step 12c
       typeImage.addEventListener('click', switchTypeDirection);
 
-      // step 13a
+      //    shows errors when show errors BtN is clicked
       document.getElementById('showErrors').onclick = function () {
             for (var i = 0; i < allLetters.length; i++) {
                   if (allLetters[i].textContent != allLetters[i].dataset.letter) {
-                        allLetters[i].style.color = 'red';
+                        allLetters[i].style.color = "red";
                   }
             }
-            // step 13c
-            setTimeout = (function () {
-                  allLetters.style.color = "";
+            // timesout and resets after 3 seconds
+            setTimeout(function () {
+                  for (var i = 0; i < allLetters.length; i++) {
+                        allLetters[i].style.color = "";
+                  }
             }, 3000);
       }
-
-      var showSolutionBtn = document.getElementById('showSolution');
+      // show solution button on click, runs commands
       document.getElementById('showSolution').onclick = function () {
             for (var i = 0; i < allLetters.length; i++) {
-                  allLetters[i].textContent = allLetters[i].dataset.letter;
+                  if (allLetters[i].textContent != allLetters[i].dataset.letter) {
+                        allLetters[i].textContent = allLetters[i].dataset.letter;
+                  }
             }
       }
 }
 
 
-
-
-// step 7
 function formatPuzzle(puzzleLetter) {
-      // step 7a
       currentLetter = puzzleLetter;
-      // step 7b
+
       for (var i = 0; i < allLetters.length; i++) {
             allLetters[i].style.backgroundColor = "";
       }
 
-      // step 7c
-      acrossClue.style.color = "rgb(96,96,28)";
-      downClue.style.color = "rgb(96,96,28)";
+      //    sets colors
+      acrossClue.style.color = "rgb(96, 96, 28)";
+      downClue.style.color = "rgb(96, 96, 28)";
 
-      // step 7d
-      if (currentLetter.dataset.clueA == !"undefined") {
+      //    if the dataset is undefined, runs commands and for loop
+      if (currentLetter.dataset.clueA != undefined) {
             acrossClue = document.getElementById(currentLetter.dataset.clueA);
-            acrossClue.style.color = 'blue';
-            wordLetters = document.querySelectorAll("[data-clue-A =" + currentLetter.getAttribute('data-clue-a') + "]");
-            wordLetters.style.backgroundColor = "rgb(231, 231, 255)";
+            acrossClue.style.color = "blue";
+            wordLetters = document.querySelectorAll('[data-clue-a =' + currentLetter.getAttribute('data-clue-a') + ']');
+            for (var i = 0; i < wordLetters.length; i++) {
+                  wordLetters[i].style.backgroundColor = "rgb(231, 231, 255)";
+            }
       }
-      // step 7e
-      if (currentLetter.dataset.clueD == !"undefined") {
-            acrossClue = document.getElementById(currentLetter.dataset.clueD);
-            acrossClue.style.color = 'red';
-            wordLetters = document.querySelectorAll("[data-clue-D =" + currentLetter.getAttribute('data-clue-d') + "]");
-            wordLetters.style.backgroundColor = "rgb(255, 231, 231)";
+      //    if the dataset is undefined, runs commands and for loop
+      if (currentLetter.dataset.clueD != undefined) {
+            downClue = document.getElementById(currentLetter.dataset.clueD);
+            downClue.style.color = "red";
+            wordLetters = document.querySelectorAll("[data-clue-d =" + currentLetter.getAttribute('data-clue-d') + "]");
+            for (var i = 0; i < wordLetters.length; i++) {
+                  wordLetters[i].style.backgroundColor = "rgb(255, 231, 231)";
+            }
       }
 
-      // step 7f
-      if (typeDirection = "right") {
+      //    if else, sets background colors
+      if (typeDirection === "right") {
             currentLetter.style.backgroundColor = "rgb(191, 191, 255)";
       } else {
-            currentLetter.style.backgroundColor = "rgb(255, 191, 191)";
+            currentLetter.style.backgroundColor = "rgb(255, 231, 231)";
       }
-}
-// step 9
-function selectLetter() {
-      // step 9a
-      var leftLetter = document.getElementById(currentLetter.dataset.left);
-      var rightLetter = document.getElementById(currentLetter.dataset.right);
-      var upLetter = document.getElementById(currentLetter.dataset.up);
-      var downLetter = document.getElementById(currentLetter.dataset.down);
-      // step 9b
-      var userKey = e.keyCode;
 
-      // step 9c
-      if (userKey = 37) {
+
+}
+
+function selectLetter() {
+      // sets variables equal to datasets
+      var leftLetter = document.getElementById(currentLetter.dataset.left);
+      var upLetter = document.getElementById(currentLetter.dataset.up);
+      var rightLetter = document.getElementById(currentLetter.dataset.right);
+      var downLetter = document.getElementById(currentLetter.dataset.down);
+      var userKey = event.keyCode;
+
+      //    userkeys for keyboard
+      if (userKey === 37) {
             formatPuzzle(leftLetter);
       } else if (userKey === 38) {
             formatPuzzle(upLetter);
@@ -169,40 +174,38 @@ function selectLetter() {
             formatPuzzle(downLetter);
       } else if (userKey === 8 || userKey === 46) {
             currentLetter.textContent = "";
-      } else if (userKey === userKey === 32) {
+      } else if (userKey === 32) {
             switchTypeDirection();
-      } else if (65 <= userKey <= userKey === 90) {
-            currentLetter = getChar(userKey);
-            if (typeDirection === 'right') {
+      } else if (userKey >= 65 && userKey <= 90) {
+            currentLetter.textContent = getChar(userKey)
+            if (typeDirection === "right") {
                   formatPuzzle(rightLetter);
             } else {
                   formatPuzzle(downLetter);
             }
 
       }
-      // step 9d
-      e.preventDefault();
+      event.preventDefault();
 }
 
-// step 11
-function switchTypeDirection() {
-      // step 11a
-      var typeImg = document.getElementById('directionImg');
-      // step 11b and 11c
-      if (typeDirection = 'right') {
-            typeDirection = 'down';
-            typeImg.src = 'pc_right.png';
-            currentLetter.style.backgroundColor = 'rgb(255, 191, 191);'
-      } else {
-            typeDirection = 'right';
-            typeImg.src = 'pc_down.png';
-            currentLetter.style.backgroundColor = 'rgb(191, 191, 255);'
 
+
+
+
+// switches type direction and background color using if else statement
+function switchTypeDirection() {
+      // body...
+      var typeImage = document.getElementById('directionImg');
+      if (typeDirection === "right") {
+            typeDirection = "down";
+            typeImage.src = "pc_right.png";
+            currentLetter.style.backgroundColor = "rgb(255,191, 191)";
+      } else {
+            typeDirection = "right";
+            typeImage.src = "pc_down.png";
+            currentLetter.style.backgroundColor = "rgb(191, 191, 255)";
       }
 }
-
-
-
 
 
 
